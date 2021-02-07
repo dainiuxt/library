@@ -1,0 +1,27 @@
+html
+  body
+    p #{message}
+    h2= 'Book details'
+    form(method='POST' action='/update')
+      input(type='hidden' id='oldtitle' name='oldtitle' value=oldtitle)
+      input(type='hidden' id='oldauthor' name='oldauthor' value=oldauthor)
+      input(type='hidden' id='oldpages' name='oldpages' value=oldpages)
+      input(type='hidden' id='oldread' name='oldread' value=oldread)
+      label(for='title') Book title:
+      br
+      input(type='text', placeholder='A Brief History of Time' name='title' value=title)
+      br
+      label(for='author') Book author:
+      br
+      input(type='text', placeholder='Stephen Hawking' name='author' value=author)
+      br
+      label(for='pages') Pages:
+      br
+      input(type='text', placeholder='256' name='pages' value=pages)
+      br
+      label(for='read') Read:
+      br
+      input(type='text', placeholder='Yes/No' name='read' value=read)
+      br
+      button(type='submit' formaction="/update") Update
+      button(type='submit' formaction="/delete") Delete

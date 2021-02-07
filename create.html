@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h2>Book details</h2>
+    <form action="/create" method="POST">
+      <label for="title" >Book title *</label><br>
+      <input type="text" id="title" name="title" class="textInput" placeholder="A brief History of Time" required>
+      <br>
+      <label for="author" >Author *</label><br>
+      <input type="text" name="author" class="textInput" placeholder="Stephen Hawking" required>
+      <br>
+      <label for="pages" >Pages *</label><br>
+      <input type="text" name="pages" class="textInput" placeholder="256" required>
+      <br>
+      <label for="read" >Read</label><br>
+      <input type="text" name="read" class="textInput" placeholder="Yes/No">
+      <br><br>
+      <input type="submit" value="Add book">
+    </form>
+  </body>
+</html>
