@@ -1,0 +1,15 @@
+.hero {
+  background-image: url("library.jpg");
+  height: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.inside {
+  background-color: rgba(245, 245, 245, 0.6);
+}
+
+.red {
+  border: red 1px solid;
+}
