@@ -43,13 +43,18 @@ app.get('/get', function (req, res) {
   res.sendFile('/index.html', {root:'.'});
 })
 
-app.get('/get-book', function (req, res) {
-  let myTitle = new RegExp(req.query.title, 'i');
+app.get('/list-all',function(req,res){
   client.connect(err => {
-    client.db('library').collection('books').findOne({title: myTitle}, function(err, result) {
+    if (err) {
+    console.log('Unable to connect to the mongoDB server. Error:', err);
+  } 
+  else {
+    console.log('Connection established');  
+    client.db('library').collection('books').find({}, {projection: { _id: 0 }}).toArray(function(err, result) {
       if (err) throw err;
-      res.render('update', {oldtitle: result.title, oldauthor: result.author, oldpages: result.pages, oldread: result.read, title: result.title, author: result.author, pages: result.pages, read: result.read});
+      console.log(result);
     });
+    }
   });
 });
 
@@ -85,45 +90,6 @@ app.post('/delete', function(req, res) {
       console.log("1 book deleted");
       res.send(`Book ${req.body.title} deleted`);
     });
-  });
-});
-
-app.get('/list-all',function(req,res){
-  var myBooks=[];
-  client.connect(err => {
-    if (err) {
-    console.log('Unable to connect to the mongoDB server. Error:', err);
-  } 
-  else {
-    console.log('Connection established');  
-    // var collection = client.db('library').collection('books');
-    // var cursor = collection.find();
-    client.db('library').collection('books').find({}, {projection: { _id: 0, title: 1, author: 1, pages: 1, read: 1}}).toArray(function(err, result) {
-      if (err) throw err;
-      console.log(result);
-      client.close();
-    });
-
-    // cursor.each(function (err, res) {
-    //   if (err) throw err;
-    //   res = myBooks.push();
-    // });
-    // return myBooks;
-    // console.log(myBooks);
-
-
-    // fs.readFile( __dirname + '/list', 'utf8', function(err, content) {
-    //   var result = content;
-    //   cursor.each(function (err, doc) {
-    //   if (err) {
-    //     console.log(err);
-    //   } else {
-    //     result +=doc;
-    //   }
-    //     }); 
-    //     res.send(result);
-    //         });
-    }
   });
 });
 
