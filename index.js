@@ -52,7 +52,10 @@ app.get('/list-all',function(req,res){
     console.log('Connection established');  
     client.db('library').collection('books').find({}, {projection: { _id: 0 }}).toArray(function(err, result) {
       if (err) throw err;
-      console.log(result);
+      for (let i=0; i<result.length; i++) {
+        console.log(result[i]);
+      }
+      // console.log(result);
     });
     res.render('list');
     }
