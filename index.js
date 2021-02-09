@@ -54,6 +54,7 @@ app.get('/list-all',function(req,res){
       if (err) throw err;
       console.log(result);
     });
+    res.render('list');
     }
   });
 });
