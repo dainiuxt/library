@@ -33,7 +33,16 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
         input#title.form-control.me-2(type='text' placeholder='Book title' aria-label='Search' name='title')
         button.btn.btn-success(type='submit') Search
 .content
-  .container.mybooks.red
+  .container.mybooks.red.pt-4.pb-4
+    table
+      tr
+        th Title
+        th Author
+        th Pages
+        th Read
+      each val in {results}
+        tr=val.results
+
 .footer.bg-light.pt-4.pb-4
   .container
     | &copy; 2021 by kurapka, hero image by 

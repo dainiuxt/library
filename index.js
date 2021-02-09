@@ -50,14 +50,14 @@ app.get('/list-all',function(req,res){
   } 
   else {
     console.log('Connection established');  
-    client.db('library').collection('books').find({}, {projection: { _id: 0 }}).toArray(function(err, result) {
+    client.db('library').collection('books').find({}, {projection: { _id: 0 }}).toArray(function(err, myBooks) {
       if (err) throw err;
-      for (let i=0; i<result.length; i++) {
-        console.log(result[i]);
-      }
-      // console.log(result);
+      for (let i=0; i<myBooks.length; i++) {
+        console.log('<td>'+myBooks[i]["title"]+'<td></td>'+myBooks[i]["author"]+'<td></td>'+myBooks[i]["pages"]+'<td></td>'+myBooks[i]["read"]+'</td>');
+      };
+      res.render('list', {results: myBooks});
     });
-    res.render('list');
+    
     }
   });
 });
