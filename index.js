@@ -11,6 +11,12 @@ app.engine('pug', require('pug').__express);
 app.set('views', '.');
 app.set('view engine', 'pug');
 mongoose.Promise = global.Promise;
+const MongoClient = require('mongodb').MongoClient;
+const assert = require('assert');
+const mongo_username = process.env.MONGO_USERNAME
+const mongo_password = process.env.MONGO_PASSWORD
+const uri = `mongodb+srv://${mongo_username}:${mongo_password}@cluster0.7c2nb.mongodb.net/library?retryWrites=true&w=majority`;
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 app.get('/', function (req, res) {
   res.sendFile('/index.html', {root:'.'});
@@ -33,19 +39,19 @@ app.post('/create', function (req, res, next) {
   res.send('Book added');
 });
 
-app.get('/list-all', function(req, res) {
-    var db = client.db("library");
-    let collection = collection('books');
-    collection.find({},{},function(e,docs){
-        res.render('bookslist', {
-            "bookslist" : docs
-        });
-    });
-});
-
 app.get('/get', function (req, res) {
   res.sendFile('/index.html', {root:'.'});
 })
+
+app.get('/get-book', function (req, res) {
+  let myTitle = new RegExp(req.query.title, 'i');
+  client.connect(err => {
+    client.db('library').collection('books').findOne({title: myTitle}, function(err, result) {
+      if (err) throw err;
+      res.render('update', {oldtitle: result.title, oldauthor: result.author, oldpages: result.pages, oldread: result.read, title: result.title, author: result.author, pages: result.pages, read: result.read});
+    });
+  });
+});
 
 app.get('/get-book', function (req, res) {
   let myTitle = new RegExp(req.query.title, 'i');
@@ -82,73 +88,46 @@ app.post('/delete', function(req, res) {
   });
 });
 
+app.get('/list-all',function(req,res){
+  var myBooks=[];
+  client.connect(err => {
+    if (err) {
+    console.log('Unable to connect to the mongoDB server. Error:', err);
+  } 
+  else {
+    console.log('Connection established');  
+    // var collection = client.db('library').collection('books');
+    // var cursor = collection.find();
+    client.db('library').collection('books').find({}, {projection: { _id: 0, title: 1, author: 1, pages: 1, read: 1}}).toArray(function(err, result) {
+      if (err) throw err;
+      console.log(result);
+      client.close();
+    });
+
+    // cursor.each(function (err, res) {
+    //   if (err) throw err;
+    //   res = myBooks.push();
+    // });
+    // return myBooks;
+    // console.log(myBooks);
+
+
+    // fs.readFile( __dirname + '/list', 'utf8', function(err, content) {
+    //   var result = content;
+    //   cursor.each(function (err, doc) {
+    //   if (err) {
+    //     console.log(err);
+    //   } else {
+    //     result +=doc;
+    //   }
+    //     }); 
+    //     res.send(result);
+    //         });
+    }
+  });
+});
+
 app.set('port', process.env.PORT || 5000);
 http.listen(app.get('port'), function() {
     console.log('listening on port', app.get('port'));
 });
-
-const MongoClient = require('mongodb').MongoClient;
-const assert = require('assert');
-const mongo_username = process.env.MONGO_USERNAME
-const mongo_password = process.env.MONGO_PASSWORD
-const uri = `mongodb+srv://${mongo_username}:${mongo_password}@cluster0.7c2nb.mongodb.net/library?retryWrites=true&w=majority`;
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-
-app.route('/list-all').get(function(req, res) {
-  client.connect(err => {
-    const cursor = client.db('library').collection('books').find().limit(numberOfResults);
-    const myBooks = cursor.toArray();
-  });
-});
-
-async function listAllBooks(client, {
-  numberOfResults = 10
-} = {}) {
-  const cursor = client.db('library').collection('books').find({}).sort({author: 'asc'}).limit(numberOfResults);
-  const results = await cursor.toArray();
-
-  if (results.length >0) {
-    console.log(`Found ${numberOfResults} books`);
-    results.forEach((result, i) => {
-      console.log(` title: ${result.title}`);
-    });
-  } else {
-    console.log('The listing is empty.')
-  }
-}
-
-listAllBooks(client, {numberOfResults: 10});
-
-// async function main() {
-//   try {
-//       // Connect to the MongoDB cluster
-//       await client.connect();
-//       await findBooks(client);
-
-//   } finally {
-//       // Close the connection to the MongoDB cluster
-//       await client.close();
-//   }
-// }
-// main().catch(console.error);
-
-// async function findBooks(client) {
-//   // See https://mongodb.github.io/node-mongodb-native/3.3/api/Collection.html#find for the find() docs
-//   const cursor = client.db("library").collection("books").find({});
-//   // Store the results in an array. If you will have many customers, you may want to iterate
-//   // this cursor instead of sending the results to an array. You can use Cursor's forEach() 
-//   // to do the iterating: https://mongodb.github.io/node-mongodb-native/3.3/api/Cursor.html#forEach
-//   const results = await cursor.toArray();
-//   const myBooks = [];
-//   // Process the results
-//   if (results.length > 0) {
-//     results.forEach((result, i) => {
-//       myBooks.push(result);
-//       // Here you could build your html or put the results in some other data structure you want to work with
-//     });
-//     console.log(myBooks);
-//     return myBooks;
-//   } else {
-//     alert("Database is empty, please add some books.");
-//   }
-// }
