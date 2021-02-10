@@ -43,6 +43,26 @@ app.get('/get', function (req, res) {
   res.sendFile('/index.html', {root:'.'});
 })
 
+// app.get('/list-all',function(req, res){
+//   client.connect(err => {
+//     if (err) {
+//     console.log('Unable to connect to the mongoDB server. Error:', err);
+//     } 
+//     else {
+//       console.log('Connection established');  
+//       client.db('library').collection('books').find({}, {projection: { _id: 0 }}).toArray(function(err, myBooks) {
+//         if (err) throw err;
+//         for (let i=0; i<myBooks.length; i++) {
+//           console.log('<td>'+myBooks[i]["title"]+'<td></td>'+myBooks[i]["author"]+'<td></td>'+myBooks[i]["pages"]+'<td></td>'+myBooks[i]["read"]+'</td>');
+//         };
+//         res.render('list', {results: myBooks});
+//       });
+//     }
+//   });
+// });
+
+let fs = require('fs');
+
 app.get('/list-all',function(req, res){
   client.connect(err => {
     if (err) {
@@ -52,14 +72,12 @@ app.get('/list-all',function(req, res){
       console.log('Connection established');  
       client.db('library').collection('books').find({}, {projection: { _id: 0 }}).toArray(function(err, myBooks) {
         if (err) throw err;
-        for (let i=0; i<myBooks.length; i++) {
-          console.log('<td>'+myBooks[i]["title"]+'<td></td>'+myBooks[i]["author"]+'<td></td>'+myBooks[i]["pages"]+'<td></td>'+myBooks[i]["read"]+'</td>');
-          // console.log(typeof oneBook);
-        };
-        res.render('list', {result: myBooks.title});
+        fs.writeFile('books.json', JSON.stringify(myBooks), function(err) {
+          if (err) throw err;
+          console.log('file saved');
+        });
       });
-      // console.log(res);
-    }
+    }    // res.render('list', {results: myBooks});
   });
 });
 
