@@ -3,22 +3,25 @@ let express = require('express');
 let app = express();
 let bodyParser = require('body-parser');
 let http = require('http').Server(app);
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.engine('pug', require('pug').__express);
-app.set('views', '.');
-app.set('view engine', 'pug');
 const MongoClient = require('mongodb').MongoClient;
 const mongo_username = process.env.MONGO_USERNAME
 const mongo_password = process.env.MONGO_PASSWORD
 const uri = `mongodb+srv://${mongo_username}:${mongo_password}@cluster0.7c2nb.mongodb.net/library?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 let fs = require('fs');
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.engine('pug', require('pug').__express);
+app.set('views', '.');
+app.set('view engine', 'pug');
+
 app.use(express.static(__dirname + '/static'));
 
 app.get('/', function (req, res) {
   res.sendFile('/index.html', {root:'.'});
 });
+
 app.get('/create', function (req, res) {
   res.sendFile('/index.html', {root:'.'});
 });
@@ -48,7 +51,7 @@ app.get('/list-all',function(req, res){
       console.log('Connection established');  
       client.db('library').collection('books').find({}, {projection: { _id: 0 }}).toArray(function(err, myBooks) {
         if (err) throw err;
-        fs.writeFile('books.json', JSON.stringify(myBooks), function(err) {
+        fs.writeFile('static/books.json', JSON.stringify(myBooks), function(err) {
           if (err) throw err;
           console.log('file saved');
         });
@@ -61,8 +64,13 @@ app.get('/get-book', function (req, res) {
   let myTitle = new RegExp(req.query.title, 'i');
   client.connect(err => {
     client.db('library').collection('books').findOne({title: myTitle}, function(err, result) {
-      if (err) throw err;
-      res.render('update', {oldtitle: result.title, oldauthor: result.author, oldpages: result.pages, oldread: result.read, title: result.title, author: result.author, pages: result.pages, read: result.read});
+      if (err) {throw err;}
+      else if (result === null) {
+        res.status(404).send('No such book found...');
+      } 
+      else {
+        res.render('update', {oldtitle: result.title, oldauthor: result.author, oldpages: result.pages, oldread: result.read, title: result.title, author: result.author, pages: result.pages, read: result.read});
+        }
     });
   });
 });
