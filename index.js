@@ -3,26 +3,22 @@ let express = require('express');
 let app = express();
 let bodyParser = require('body-parser');
 let http = require('http').Server(app);
-const mongoose = require('mongoose');
-let myBooks=[];
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.engine('pug', require('pug').__express);
 app.set('views', '.');
 app.set('view engine', 'pug');
-mongoose.Promise = global.Promise;
 const MongoClient = require('mongodb').MongoClient;
-const assert = require('assert');
 const mongo_username = process.env.MONGO_USERNAME
 const mongo_password = process.env.MONGO_PASSWORD
 const uri = `mongodb+srv://${mongo_username}:${mongo_password}@cluster0.7c2nb.mongodb.net/library?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+let fs = require('fs');
+app.use(express.static(__dirname + '/static'));
 
 app.get('/', function (req, res) {
   res.sendFile('/index.html', {root:'.'});
 });
-app.use(express.static(__dirname + '/static'));
-
 app.get('/create', function (req, res) {
   res.sendFile('/index.html', {root:'.'});
 });
@@ -43,26 +39,6 @@ app.get('/get', function (req, res) {
   res.sendFile('/index.html', {root:'.'});
 })
 
-// app.get('/list-all',function(req, res){
-//   client.connect(err => {
-//     if (err) {
-//     console.log('Unable to connect to the mongoDB server. Error:', err);
-//     } 
-//     else {
-//       console.log('Connection established');  
-//       client.db('library').collection('books').find({}, {projection: { _id: 0 }}).toArray(function(err, myBooks) {
-//         if (err) throw err;
-//         for (let i=0; i<myBooks.length; i++) {
-//           console.log('<td>'+myBooks[i]["title"]+'<td></td>'+myBooks[i]["author"]+'<td></td>'+myBooks[i]["pages"]+'<td></td>'+myBooks[i]["read"]+'</td>');
-//         };
-//         res.render('list', {results: myBooks});
-//       });
-//     }
-//   });
-// });
-
-let fs = require('fs');
-
 app.get('/list-all',function(req, res){
   client.connect(err => {
     if (err) {
@@ -77,7 +53,7 @@ app.get('/list-all',function(req, res){
           console.log('file saved');
         });
       });
-    }    // res.render('list', {results: myBooks});
+    }
   });
 });
 
