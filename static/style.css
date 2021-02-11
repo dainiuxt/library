@@ -13,3 +13,9 @@
 .red {
   border: red 1px solid;
 }
+
+.hide {
+  display: none;
+  height: 0;
+  width: 0;
+}

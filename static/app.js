@@ -1,50 +1,45 @@
-const header = document.querySelector('header');
-const section = document.querySelector('section');
+function updatePage() {
+  const section = document.querySelector('section');
+  let requestURL = 'books.json';
+  let request = new XMLHttpRequest();
+  request.open('GET', requestURL);
+  request.responseType = 'json';
+  request.send();
 
-let requestURL = 'books.json';
-let request = new XMLHttpRequest();
-request.open('GET', requestURL);
-request.responseType = 'json';
-request.send();
+  request.onload = function() {
+    const myBooks = request.response;
+    showBooks(myBooks);
+  }
 
-request.onload = function() {
-  const myBooks = request.response;
-  populateHeader(myBooks);
-  showBooks(myBooks);
-}
+  function showBooks(obj) {
+    const books = obj;
+    const myList = document.createElement('ol');
 
-function populateHeader(obj) {
-  const myH1 = document.createElement('h1');
-  myH1.textContent = obj['title'];
-  header.appendChild(myH1);
-
-  const myPara = document.createElement('p');
-  myPara.textContent = 'Title: ' + obj['title'] + ' Author: ' + obj['author'];
-  header.appendChild(myPara);
-}
-
-function showBooks(obj) {
-  const books = obj;
-
-  for (let i = 0; i < books.length; i++) {
-    const myArticle = document.createElement('article');
-    const myH2 = document.createElement('h2');
-    const myPara1 = document.createElement('p');
-    const myPara2 = document.createElement('p');
-    const myPara3 = document.createElement('p');
-    const myList = document.createElement('ul');
-
-    myH2.textContent = books[i].title;
-    myPara1.textContent = 'Author: ' + books[i].author;
-    myPara2.textContent = 'Pages: ' + books[i].pages;
-    myPara3.textContent = 'Read: ' +books[i].read;
-
-    myArticle.appendChild(myH2);
-    myArticle.appendChild(myPara1);
-    myArticle.appendChild(myPara2);
-    myArticle.appendChild(myPara3);
-    myArticle.appendChild(myList);
-
-    section.appendChild(myArticle);
+    for (let i = 0; i < books.length; i++) {
+      const myEntry = document.createElement('li');
+      myEntry.textContent = books[i].title + ' by ' + books[i].author + ', ' +books[i].pages + ' pages. ' + ((books[i].read.toLowerCase() === 'yes') ? 'Already red.' : 'In your nearest plans.');
+      myList.appendChild(myEntry);
+      section.appendChild(myList);
+    }
   }
 }
+updatePage();
+
+// window.onload = function(){
+//   for (let count = 3; count>0; count--) {
+//     document.querySelector('.magic-button').click();
+//     // document.querySelector('.magic-button').click();
+//   }
+//   // updatePage();
+// }
+
+// var getList = (function() {
+//     var executed = false;
+//     return function() {
+//         if (!executed) {
+//             executed = true;
+//             document.querySelector('.magic-button').click();
+//         }
+//     };
+// })();
+// getList();

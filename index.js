@@ -9,6 +9,7 @@ const mongo_password = process.env.MONGO_PASSWORD
 const uri = `mongodb+srv://${mongo_username}:${mongo_password}@cluster0.7c2nb.mongodb.net/library?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 let fs = require('fs');
+const puppeteer = require('puppeteer');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -35,30 +36,13 @@ app.post('/create', function (req, res, next) {
       console.log("1 book added");
     });
   });
-  res.send('Book added');
+  res.sendFile('/static/library.html', {root:'.'});
+  // res.send('Book added');
 });
 
 app.get('/get', function (req, res) {
   res.sendFile('/index.html', {root:'.'});
 })
-
-app.get('/list-all',function(req, res){
-  client.connect(err => {
-    if (err) {
-    console.log('Unable to connect to the mongoDB server. Error:', err);
-    } 
-    else {
-      console.log('Connection established');  
-      client.db('library').collection('books').find({}, {projection: { _id: 0 }}).toArray(function(err, myBooks) {
-        if (err) throw err;
-        fs.writeFile('static/books.json', JSON.stringify(myBooks), function(err) {
-          if (err) throw err;
-          console.log('file saved');
-        });
-      });
-    }
-  });
-});
 
 app.get('/get-book', function (req, res) {
   let myTitle = new RegExp(req.query.title, 'i');
@@ -83,9 +67,29 @@ app.post('/update', function(req, res) {
     client.db("library").collection("books").updateOne(query, newvalues, function(err, result) {
         if (err) throw err;
         console.log("1 book updated");
-        res.render('update', {message: 'Book updated!', oldtitle: req.body.title, oldauthor: req.body.author, oldpages: req.body.pages, oldread: req.body.read, title: req.body.title, author: req.body.author, pages: req.body.pages, read: req.body.read});
+        // res.render('update', {message: 'Book updated!', oldtitle: req.body.title, oldauthor: req.body.author, oldpages: req.body.pages, oldread: req.body.read, title: req.body.title, author: req.body.author, pages: req.body.pages, read: req.body.read});
       });
   });
+  res.sendFile('/static/library.html', {root:'.'});
+});
+
+app.get('/list-all',function(req, res){
+  client.connect(err => {
+    if (err) {
+    console.log('Unable to connect to the mongoDB server. Error:', err);
+    } 
+    else {
+      console.log('Connection established');  
+      client.db('library').collection('books').find({}, {projection: { _id: 0 }}).toArray(function(err, myBooks) {
+        if (err) throw err;
+        fs.writeFile('static/books.json', JSON.stringify(myBooks), function(err) {
+          if (err) throw err;
+          console.log('file saved');
+        });
+      });
+    }
+  });
+  res.sendFile('/static/library.html', {root:'.'});
 });
 
 app.post('/delete', function(req, res) {
@@ -95,9 +99,10 @@ app.post('/delete', function(req, res) {
     client.db("library").collection("books").deleteOne(query, function(err, obj) {
       if (err) throw err;
       console.log("1 book deleted");
-      res.send(`Book ${req.body.title} deleted`);
+      // res.send(`Book ${req.body.title} deleted`);
     });
   });
+  res.sendFile('/static/library.html', {root:'.'});
 });
 
 app.set('port', process.env.PORT || 5000);

@@ -11,94 +11,82 @@
     <title>Library Project of TOP</title>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="/">Library</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <a class="nav-link" href="#">Link</a>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Dropdown
-              </a>
-              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="#">Action</a></li>
-                <li><a class="dropdown-item" href="#">Another action</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="#">Something else here</a></li>
-              </ul>
-            </li>
-          </ul>
-          <form class="d-flex" action="/get-book" method="GET">
-            <input class="form-control me-2" type="text" placeholder="Book title" aria-label="Search" id="title" name="title">
-            <button class="btn btn-success" type="submit">Search</button>
-          </form>
+    <div class="fullscreen">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/">Library</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link" href="library.html">Your books</a>
+              </li>
+            </ul>
+            <form class="d-flex" action="/get-book" method="GET">
+              <input class="form-control me-2" type="text" placeholder="Book title" aria-label="Search" id="title" name="title">
+              <button class="btn btn-success" type="submit">Search</button>
+            </form>
+          </div>
+        </div>
+      </nav>
+      <div class="bg-light p-5 rounded-lg hero">
+        <div class="container inside">
+          <h1 class="display-4 fw-bold">Your personal library</h1>
+          <p class="lead fw-bold">Here you can log the books you are planning to read and already red.</p>
+          <hr class="my-4">
+          <p class="fw-bold">Cheer-up yourself - reading is sexy ;)</p>
+          <p class="fw-bold">Start adding your books</p>
+        </div>
+        <div class="container mt-3">
+          <!-- Button trigger modal -->
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            Add new book
+          </button>
+          <a href="library.html" class="px-4">
+            <button type="button" class="btn btn-primary">
+              Your bookshelf
+            </button>
+          </a>
+          <!-- Modal -->
+          <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">New book</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/create" method="POST">
+                  <div class="modal-body">
+                    <label for="title" >Book title *</label><br>
+                    <input type="text" id="title" name="title" class="textInput" placeholder="A brief History of Time" required>
+                    <br>
+                    <label for="author" >Author *</label><br>
+                    <input type="text" name="author" class="textInput" placeholder="Stephen Hawking" required>
+                    <br>
+                    <label for="pages" >Pages *</label><br>
+                    <input type="text" name="pages" class="textInput" placeholder="256" required>
+                    <br>
+                    <label for="read" >Read</label><br>
+                    <input type="text" name="read" class="textInput" placeholder="Yes/No">
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button submit" class="btn btn-primary">Add book</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div> <!-- END Modal -->     
+        </div> <!-- END modal CONTAINER -->
+      </div>
+      <div class="footer bg-light pt-4 pb-4">
+        <div class="container">
+          &copy; 2021 by kurapka, hero image by <a href="https://unsplash.com/photos/2JIvboGLeho?utm_source=unsplash&utm_medium=referral&utm_content=creditShareLink">Susan Yin, unsplash</a>
         </div>
       </div>
-    </nav>
-    <div class="bg-light p-5 rounded-lg hero">
-      <div class="container inside">
-        <h1 class="display-4 fw-bold">Your personal library</h1>
-        <p class="lead fw-bold">Here you can log the books you are planning to read and already red.</p>
-        <hr class="my-4">
-        <p class="fw-bold">Cheer-up yourself - reading is sexy ;)</p>
-        <p class="fw-bold">Start adding your books</p>
-      </div>
-      <div class="container mt-3">
-        <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-          Add new book
-        </button>
-        <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">New book</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <form action="/create" method="POST">
-                <div class="modal-body">
-                  <label for="title" >Book title *</label><br>
-                  <input type="text" id="title" name="title" class="textInput" placeholder="A brief History of Time" required>
-                  <br>
-                  <label for="author" >Author *</label><br>
-                  <input type="text" name="author" class="textInput" placeholder="Stephen Hawking" required>
-                  <br>
-                  <label for="pages" >Pages *</label><br>
-                  <input type="text" name="pages" class="textInput" placeholder="256" required>
-                  <br>
-                  <label for="read" >Read</label><br>
-                  <input type="text" name="read" class="textInput" placeholder="Yes/No">
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                  <button type="button submit" class="btn btn-primary">Add book</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div> <!-- END Modal -->     
-      </div> <!-- END modal CONTAINER -->
     </div>
-    <div class="container">
-      <div class="mybooks red">
-        <header></header>
-        <section></section>
-
-      </div>
-    </div>
-    <div class="footer bg-light pt-4 pb-4">
-      <div class="container">
-        &copy; 2021 by kurapka, hero image by <a href="https://unsplash.com/photos/2JIvboGLeho?utm_source=unsplash&utm_medium=referral&utm_content=creditShareLink">Susan Yin, unsplash</a>
-      </div>
-    </div>
-  <script src="app.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
   </body>
 </html>
